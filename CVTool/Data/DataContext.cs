@@ -1,6 +1,5 @@
 ﻿using CVTool.Data.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace CVTool.Data
 {

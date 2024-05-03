@@ -1,12 +1,12 @@
 using CVTool.Filters;
 using CVTool.Models.AddResume;
 using CVTool.Models.DeleteResume;
+using CVTool.Models.EditResume;
 using CVTool.Models.GetResume;
 using CVTool.Models.GetUserResumes;
 using CVTool.Services.ResumeService;
 using CVTool.Validators.Resolver;
 using FluentValidation;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AuthorizeAttribute = CVTool.Filters.AuthorizeAttribute;
 
@@ -41,13 +41,21 @@ namespace CVTool.Controllers
             return await _resumeService.DeleteResume(deleteResumeRequest);
         }
 
-        [AllowAnonymous]
         [HttpPost("get")]
         public async Task<GetResumeResponseDTO> GetResume(GetResumeRequestDTO getResumeRequest)
         {
             var validator = _validatorsResolver.Resolve<GetResumeRequestDTO>();
             await validator.ValidateAndThrowAsync(getResumeRequest);
             return await _resumeService.GetResume(getResumeRequest);
+        }
+
+
+        [HttpPost("edit")]
+        public async Task<EditResumeResponseDTO> Edit(EditResumeRequestDTO editResumeRequest)
+        {
+            var validator = _validatorsResolver.Resolve<EditResumeRequestDTO>();
+            await validator.ValidateAndThrowAsync(editResumeRequest);
+            return await _resumeService.EditResume(editResumeRequest);
         }
 
         [HttpPost("getByUser")]

@@ -3,6 +3,7 @@ using CVTool.Data;
 using CVTool.Data.Model;
 using CVTool.Models.AddResume;
 using CVTool.Models.DeleteResume;
+using CVTool.Models.EditResume;
 using CVTool.Models.GetResume;
 using CVTool.Models.GetUserResumes;
 using Microsoft.EntityFrameworkCore;
@@ -59,6 +60,25 @@ namespace CVTool.Services.ResumeService
             return new GetResumeByUserResponseDTO
             {
                 Resumes = resumes
+            };
+        }
+
+        public async Task<EditResumeResponseDTO> EditResume(EditResumeRequestDTO editResumeRequest)
+        {
+            var resume = await _dataContext.Resumes.
+                Include(r => r.Components)
+                .ThenInclude(c => c.ComponentEntries)
+                .ThenInclude(cche => cche.Children).
+                FirstAsync(r => r.Id == editResumeRequest.Id);
+
+            _dataContext.RemoveRange(resume.Components);
+            _mapper.Map(editResumeRequest, resume);
+            _dataContext.Update(resume);
+            await _dataContext.SaveChangesAsync();
+
+            return new EditResumeResponseDTO
+            {
+                ResumeId = resume.Id
             };
         }
     }

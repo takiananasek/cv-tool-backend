@@ -111,7 +111,6 @@ namespace CVTool.Controllers
         [HttpPost("revokeToken")]
         public async Task<IActionResult> RevokeToken(RevokeTokenRequestDto model)
         {
-            // accept refresh token in request body or cookie
             var token = model.Token ?? Request.Headers["RefreshToken"];
 
             if (string.IsNullOrEmpty(token))

@@ -45,15 +45,12 @@ namespace CVTool.Services.UserService
         {
             var user = _context.Users.SingleOrDefault(x => x.JwtId == model.ProviderKey);
 
-            // authentication successful so generate jwt and refresh tokens
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
             var refreshToken = _jwtUtils.GenerateRefreshToken();
             user.RefreshTokens.Add(refreshToken);
 
-            // remove old refresh tokens from user
             removeOldRefreshTokens(user);
 
-            // save changes to db
             _context.Update(user);
             _context.SaveChanges();
 
@@ -62,7 +59,6 @@ namespace CVTool.Services.UserService
 
         public TokenValidationResponse ValidateJwt(string token)
         {
-            //rewrite to check for session
             var userId = _jwtUtils.ValidateJwtToken(token);
             if(userId == null)
             {
@@ -79,7 +75,6 @@ namespace CVTool.Services.UserService
 
             if (refreshToken.IsRevoked)
             {
-                // revoke all descendant tokens in case this token has been compromised
                 revokeDescendantRefreshTokens(refreshToken, user, $"Attempted reuse of revoked ancestor token: {token}");
                 _context.Update(user);
                 _context.SaveChanges();
@@ -88,18 +83,14 @@ namespace CVTool.Services.UserService
             if (!refreshToken.IsActive)
                 throw new AuthException("Invalid token");
 
-            // replace old refresh token with a new one (rotate token)
             var newRefreshToken = rotateRefreshToken(refreshToken);
             user.RefreshTokens.Add(newRefreshToken);
 
-            // remove old refresh tokens from user
             removeOldRefreshTokens(user);
 
-            // save changes to db
             _context.Update(user);
             _context.SaveChanges();
 
-            // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
 
             return new AuthenticateResponseDto(user, jwtToken, newRefreshToken.Token);
@@ -130,8 +121,6 @@ namespace CVTool.Services.UserService
             return user;
         }
 
-        // helper methods
-
         private User getUserByRefreshToken(string token)
         {
             var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
@@ -151,7 +140,6 @@ namespace CVTool.Services.UserService
 
         private void removeOldRefreshTokens(User user)
         {
-            // remove old inactive refresh tokens from user based on TTL in app settings
             user.RefreshTokens.RemoveAll(x =>
             !x.IsActive &&
                 x.Created.AddDays(_appSettings.RefreshTokenTTL) <= DateTime.UtcNow);
@@ -159,7 +147,6 @@ namespace CVTool.Services.UserService
 
         private void revokeDescendantRefreshTokens(RefreshToken refreshToken, User user, string reason)
         {
-            // recursively traverse the refresh token chain and ensure all descendants are revoked
             if (!string.IsNullOrEmpty(refreshToken.ReplacedByToken))
             {
                 var childToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken.ReplacedByToken);

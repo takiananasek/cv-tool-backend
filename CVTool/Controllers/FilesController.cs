@@ -19,13 +19,11 @@ namespace CVTool.Controllers
         private readonly DataContext _context;
         private readonly IAmazonS3 _s3Client;
         private readonly FileSettings _fileSettings;
-        private readonly IValidatorsResolver _validatorsResolver;
 
-        public FilesController(IWebHostEnvironment webHostEnvironment, IValidatorsResolver resolver, DataContext context, IAmazonS3 s3Client, IOptions<FileSettings> fileSettings)
+        public FilesController(IWebHostEnvironment webHostEnvironment, DataContext context, IAmazonS3 s3Client, IOptions<FileSettings> fileSettings)
         {
             _context = context;
             _s3Client = s3Client;
-            _validatorsResolver = resolver;
             _fileSettings = fileSettings.Value;
         }
 

@@ -7,10 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Resources\**" />
-    <Content Remove="Resources\**" />
-    <EmbeddedResource Remove="Resources\**" />
-    <None Remove="Resources\**" />
+    <Content Include="Properties\launchSettings.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -48,6 +45,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

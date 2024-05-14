@@ -1,27 +1,26 @@
 ﻿using CVTool.Data.Model;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CVTool.Data
 {
     public class DataContext: DbContext
     {
         protected readonly IConfiguration Configuration;
-        public DbSet<User> Users { get; set; }
-        public DbSet<ImageMetaData> ImageMetaDatas { get; set; }
-        public DbSet<Resume> Resumes { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
-        public DbSet<UserSession> UserSessions { get; set; }
-        public DbSet<ComponentEntry> ComponentEntries { get; set; }
-        public DbSet<ComponentChildEntry> ComponentChildEntries { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<ImageMetaData> ImageMetaDatas { get; set; }
+        public virtual DbSet<Resume> Resumes { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
+        public virtual DbSet<Component> Components { get; set; }
+        public virtual DbSet<UserSession> UserSessions { get; set; }
+        public virtual DbSet<ComponentEntry> ComponentEntries { get; set; }
+        public virtual DbSet<ComponentChildEntry> ComponentChildEntries { get; set; }
 
-        public DataContext(IConfiguration configuration)
+        public DataContext()
         {
-            Configuration = configuration;
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        public DataContext(DbContextOptions<DataContext> options): base(options)
         {
-            var prodConnectionString = Configuration.GetConnectionString("WebApiDatabaseLocal");
-            options.UseSqlServer(prodConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

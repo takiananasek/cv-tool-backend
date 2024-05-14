@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CVTool", "CVTool\CVTool.csproj", "{684C39EC-6497-43E5-B9C5-FDE9C412C2A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CVTool", "CVTool\CVTool.csproj", "{684C39EC-6497-43E5-B9C5-FDE9C412C2A0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CVTool.Tests", "CVTool.Tests\CVTool.Tests.csproj", "{21876CFF-6565-43BB-8D59-5AB9AB52018A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CVTool.IntegrationTests", "CVTool.IntegrationTests\CVTool.IntegrationTests.csproj", "{A7555B94-0BC9-4F3A-ABF7-71632E23D761}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{684C39EC-6497-43E5-B9C5-FDE9C412C2A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{684C39EC-6497-43E5-B9C5-FDE9C412C2A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{684C39EC-6497-43E5-B9C5-FDE9C412C2A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{21876CFF-6565-43BB-8D59-5AB9AB52018A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{21876CFF-6565-43BB-8D59-5AB9AB52018A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{21876CFF-6565-43BB-8D59-5AB9AB52018A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{21876CFF-6565-43BB-8D59-5AB9AB52018A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7555B94-0BC9-4F3A-ABF7-71632E23D761}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7555B94-0BC9-4F3A-ABF7-71632E23D761}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7555B94-0BC9-4F3A-ABF7-71632E23D761}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7555B94-0BC9-4F3A-ABF7-71632E23D761}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

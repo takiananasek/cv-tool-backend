@@ -8,7 +8,6 @@ using CVTool.Validators;
 using CVTool.Validators.Resolver;
 using FluentValidation;
 using System.Reflection;
-using CVTool.Middlewares;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +18,9 @@ using CVTool.Services.JwtUtils;
 using CVTool.Models.Users;
 using Amazon.S3;
 using CVTool.Models.Files;
+using Microsoft.EntityFrameworkCore;
+using CVTool.Services.FilesService;
+using CVTool.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,21 +37,27 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddValidatorsFromAssemblyContaining<AddResumeRequestDTOValidator>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-builder.Services.AddDbContext<DataContext>();
+builder.Services.AddDbContext<DataContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("WebApiDatabaseProd");
+
+    options.UseSqlServer(connectionString);
+});
 builder.Services.AddScoped<IResumeService, ResumeService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDefaultAWSOptions(builder.Configuration.GetAWSOptions());
 builder.Services.AddAWSService<IAmazonS3>();
-builder.Services.AddSingleton<IValidatorsResolver, ValidatorsResolver>();
 builder.Services.AddScoped<IValidator<AddResumeRequestDTO>, AddResumeRequestDTOValidator>();
 builder.Services.AddScoped<IValidator<GetFileByKeyRequestDTO>, GetFileByKeyRequestDTOValidator>();
 builder.Services.AddScoped<IValidator<DeleteResumeRequestDTO>, DeleteResumeRequestDTOValidator>();
 builder.Services.AddScoped<IValidator<GetResumeRequestDTO>, GetResumeRequestDTOValidator>();
+builder.Services.AddScoped<IValidatorsResolver, ValidatorsResolver>();
 builder.Services.AddScoped<IExternalAuthJwtHandler, ExternalAuthJwtHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
+builder.Services.AddScoped<IFilesService, FilesService>();
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
 builder.Services.Configure<FileSettings>(builder.Configuration.GetSection("FileSettings"));
 builder.Services.AddScoped<IValidator<GetResumeByUserRequestDTO>, GetUserResumesRequestDTOValidator>();
@@ -74,16 +82,12 @@ app.UseCors(option => option
                .AllowAnyHeader());
 
 app.UseStaticFiles();
-//app.UseStaticFiles(new StaticFileOptions()
-//{
-//    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
-//    RequestPath = new PathString("/Resources")
-//});
 app.UseMiddleware<ErrorHandlerMiddleware>();
 app.UseHttpsRedirection();
-//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

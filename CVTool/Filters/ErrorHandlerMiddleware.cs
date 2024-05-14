@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text.Json;
 
-namespace CVTool.Middlewares
+namespace CVTool.Filters
 {
     public class ErrorHandlerMiddleware
     {

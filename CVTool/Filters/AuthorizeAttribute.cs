@@ -18,11 +18,12 @@ namespace CVTool.Filters
 
             var jwtUtils =
             context.HttpContext.RequestServices.GetService(typeof(IJwtUtils))
-                as JwtUtils;
+                as IJwtUtils;
 
             var userService =
             context.HttpContext.RequestServices.GetService(typeof(IUserService))
-                as UserService;
+                as IUserService;
+
 
             var token = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
             var userId = jwtUtils.ValidateJwtToken(token);

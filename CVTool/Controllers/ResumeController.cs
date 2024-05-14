@@ -7,6 +7,7 @@ using CVTool.Models.GetUserResumes;
 using CVTool.Services.ResumeService;
 using CVTool.Validators.Resolver;
 using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AuthorizeAttribute = CVTool.Filters.AuthorizeAttribute;
 
@@ -41,6 +42,7 @@ namespace CVTool.Controllers
             return await _resumeService.DeleteResume(deleteResumeRequest);
         }
 
+        [AllowAnonymous]
         [HttpPost("get")]
         public async Task<GetResumeResponseDTO> GetResume(GetResumeRequestDTO getResumeRequest)
         {

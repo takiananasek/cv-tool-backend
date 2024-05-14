@@ -7,6 +7,6 @@
         public Component Component { get; set; }
         public string Label { get; set; }
         public string? Value { get; set; }
-        public ICollection<ComponentChildEntry> Children { get; set; }
+        public ICollection<ComponentChildEntry> Children { get; set; } = new List<ComponentChildEntry>();
     }
 }

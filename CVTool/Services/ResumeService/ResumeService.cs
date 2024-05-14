@@ -1,22 +1,28 @@
-﻿using AutoMapper;
+﻿using Amazon.S3;
+using AutoMapper;
 using CVTool.Data;
 using CVTool.Data.Model;
 using CVTool.Models.AddResume;
 using CVTool.Models.DeleteResume;
 using CVTool.Models.EditResume;
+using CVTool.Models.Files;
 using CVTool.Models.GetResume;
 using CVTool.Models.GetUserResumes;
+using CVTool.Services.FilesService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CVTool.Services.ResumeService
 {
-    public class ResumeService: IResumeService
+    public class ResumeService : IResumeService
     {
         private readonly IMapper _mapper;
         private readonly DataContext _dataContext;
-        public ResumeService(DataContext dataContext, IMapper mapper)
+        private readonly IFilesService _filesService;
+        public ResumeService(DataContext dataContext, IMapper mapper, IFilesService filesService)
         {
             _mapper = mapper;
+            _filesService = filesService;
             _dataContext = dataContext;
         }
 
@@ -25,13 +31,14 @@ namespace CVTool.Services.ResumeService
             var resume = _mapper.Map<Resume>(addResumeRequest);
             await _dataContext.AddAsync(resume);
             await _dataContext.SaveChangesAsync();
-            return new AddResumeResponseDTO() { ResumeId = resume.Id};
+            return new AddResumeResponseDTO() { ResumeId = resume.Id };
         }
 
         public async Task<DeleteResumeResponseDTO> DeleteResume(DeleteResumeRequestDTO deleteResumeRequest)
         {
             var resume = await _dataContext.Resumes.FirstAsync(r => r.Id == deleteResumeRequest.Id);
-             _dataContext.Remove(resume);
+            _dataContext.Remove(resume);
+            await _filesService.DeleteResumeFiles(resume); ;
             await _dataContext.SaveChangesAsync();
             return new DeleteResumeResponseDTO();
         }
@@ -42,7 +49,8 @@ namespace CVTool.Services.ResumeService
                 .Include(r => r.Components)
                 .ThenInclude(c => c.ComponentEntries)
                 .ThenInclude(ce => ce.Children)
-                .FirstAsync(r => r.Id == getResumeRequest.Id);
+                .FirstOrDefaultAsync(r => r.Id == getResumeRequest.Id);
+
             var response = _mapper.Map<GetResumeResponseDTO>(resume);
             return response;
         }
@@ -70,6 +78,8 @@ namespace CVTool.Services.ResumeService
                 .ThenInclude(c => c.ComponentEntries)
                 .ThenInclude(cche => cche.Children).
                 FirstAsync(r => r.Id == editResumeRequest.Id);
+
+            await _filesService.DeleteUnnecessaryFiles(resume, editResumeRequest.ProfileImageMetadataName, editResumeRequest.BackgroundImageMetadataName);
 
             _dataContext.RemoveRange(resume.Components);
             _mapper.Map(editResumeRequest, resume);

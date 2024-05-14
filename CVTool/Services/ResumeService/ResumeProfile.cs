@@ -11,7 +11,7 @@ namespace CVTool.Services.ResumeService
     {
         public ResumeProfile()
         {
-            CreateMap<AddResumeRequestDTO, Resume>()
+            CreateMap<AddResumeRequestDTO, Resume>(MemberList.None)
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.Components, opt => opt.MapFrom(src => src.Components.Select(
@@ -32,8 +32,7 @@ namespace CVTool.Services.ResumeService
                         }).ToList()
                     }).ToList()));
 
-            CreateMap<AddResumeRequestDTO, Resume>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
+            CreateMap<EditResumeRequestDTO, Resume>(MemberList.None)
                 .ForMember(dest => dest.Owner, opt => opt.Ignore())
                 .ForMember(dest => dest.Components, opt => opt.MapFrom(src => src.Components.Select(
                     c => new Component
@@ -53,27 +52,7 @@ namespace CVTool.Services.ResumeService
                         }).ToList()
                     }).ToList()));
 
-            CreateMap<EditResumeRequestDTO, Resume>()
-                .ForMember(dest => dest.Owner, opt => opt.Ignore())
-                .ForMember(dest => dest.Components, opt => opt.MapFrom(src => src.Components.Select(
-                    c => new Component
-                    {
-                        ComponentDocumentId = c.ComponentDocumentId,
-                        ComponentType = c.ComponentType,
-                        ComponentEntries = c.ComponentEntries.Select(ce => new ComponentEntry
-                        {
-                            Label = ce.Label,
-                            Value = ce.Value,
-                            Children = ce.Children.Select(cc =>
-                            new ComponentChildEntry
-                            {
-                                Label = cc.Label,
-                                Value = cc.Value
-                            }).ToList()
-                        }).ToList()
-                    }).ToList()));
-
-            CreateMap<Resume, GetResumeResponseDTO > ()
+            CreateMap<Resume, GetResumeResponseDTO>(MemberList.None)
                 .ForMember(dest => dest.Components, opt => opt.MapFrom(src => src.Components.Select(
                     c => new ComponentDTO
                     {

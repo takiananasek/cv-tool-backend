@@ -70,6 +70,8 @@ builder.Services.Configure<FormOptions>(o =>
 
 var app = builder.Build();
 
+app.UseHttpsRedirection();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

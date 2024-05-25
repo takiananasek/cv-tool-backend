@@ -366,3 +366,6 @@ FodyWeavers.xsd
 
 appsettings.json
 appsettings.Development.json
+/CVTool/appsettings.json
+/CVTool/.ebextensions/https-instance-securitygroup.config
+/CVTool/.config/dotnet-tools.json

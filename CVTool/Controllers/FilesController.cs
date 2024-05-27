@@ -1,14 +1,6 @@
-using Amazon.S3;
-using Amazon.S3.Model;
-using CVTool.Data;
-using CVTool.Filters;
-using CVTool.Models.Files;
-using CVTool.Validators.Resolver;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using AuthorizeAttribute = CVTool.Filters.AuthorizeAttribute;
-using System.Net.Http.Headers;
 using CVTool.Services.FilesService;
+using Microsoft.AspNetCore.Mvc;
+using AuthorizeAttribute = CVTool.Filters.AuthorizeAttribute;
 
 namespace CVTool.Controllers
 {
@@ -19,8 +11,9 @@ namespace CVTool.Controllers
     {
         private readonly IFilesService _filesService;
 
-        public FilesController(DataContext context, IAmazonS3 s3Client, IOptions<FileSettings> fileSettings)
+        public FilesController(IFilesService filesService)
         {
+            _filesService = filesService;
         }
 
         [HttpPost("upload"), DisableRequestSizeLimit]
